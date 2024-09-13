@@ -1,0 +1,8 @@
+{
+  "recommendations": [
+    "esbenp.prettier-vscode",
+    "csharpier.csharpier-vscode",
+    "redhat.vscode-xml",
+    "redhat.vscode-yaml"
+  ]
+}

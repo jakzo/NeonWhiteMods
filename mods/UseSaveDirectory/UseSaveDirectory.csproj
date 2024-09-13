@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk" DefaultTargets="BuildAll">
+  <Target Name="BuildAll">
+    <!-- All game/Melon Loader version combinations to build -->
+    <MSBuild Projects="$(MSBuildProjectFile)" Targets="Build"
+      Properties="Configuration=$(Configuration);GamePlatform=XBOX;MelonLoader=6" />
+  </Target>
+
+  <PropertyGroup>
+    <CopyIntoGameAfterBuild>true</CopyIntoGameAfterBuild>
+
+    <ProjectGuid>{CA7518A5-AB0F-40B0-B1D1-1954BCA3D0E4}</ProjectGuid>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="src/**/*.cs" />
+    <Compile Include="../../common/NeonMod.cs" />
+  </ItemGroup>
+</Project>

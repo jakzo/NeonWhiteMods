@@ -1,0 +1,41 @@
+{
+  "cSpell.words": [],
+  "files.autoSave": "onFocusChange",
+  "[csharp]": {
+    "editor.defaultFormatter": "csharpier.csharpier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[xml]": {
+    "editor.defaultFormatter": "redhat.vscode-xml"
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml"
+  },
+  "dotnet.defaultSolution": "NeonWhiteMods.sln",
+  "omnisharp.useModernNet": true,
+  "editor.formatOnSave": true,
+  "dotnet.preferCSharpExtension": false,
+  "dotnet.server.useOmnisharp": false,
+  "xml.format.preserveSpace": [
+    "xsl:text",
+    "xsl:comment",
+    "xsl:processing-instruction",
+    "literallayout",
+    "programlisting",
+    "screen",
+    "synopsis",
+    "pre",
+    "xd:pre",
+    "HintPath",
+    "SteamPath",
+    "XboxPath",
+    "GamePath",
+    "PostBuildEvent",
+    "DefineConstants"
+  ]
+}

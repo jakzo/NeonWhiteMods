@@ -1,0 +1,102 @@
+<Project>
+
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <TargetFramework>net472</TargetFramework>
+
+    <IsSteam Condition=" '$(GamePlatform)' == 'STEAM' or '$(GamePlatform)' == '' ">true</IsSteam>
+    <IsXbox Condition=" '$(GamePlatform)' == 'XBOX' or '$(GamePlatform)' == '' ">true</IsXbox>
+
+    <SteamPath>$(GAME_PATH_STEAM)</SteamPath>
+    <SteamPath Condition=" '$(SteamPath)' == '' ">C:\Program Files (x86)\Steam\steamapps\common\Neon White</SteamPath>
+
+    <XboxPath>$(GAME_PATH_XBOX)</XboxPath>
+    <XboxPath Condition=" '$(XboxPath)' == '' ">C:\XboxGames\Neon White\Content</XboxPath>
+
+    <GamePath Condition=" '$(GamePlatform)' == 'STEAM' ">$(SteamPath)</GamePath>
+    <GamePath Condition=" '$(GamePlatform)' == 'XBOX' ">$(XboxPath)</GamePath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(GamePlatform)' == '' ">
+    <GamePath>$(SteamPath)</GamePath>
+    <GamePath Condition=" !Exists('$(SteamPath)') and Exists('$(XboxPath)') ">$(XboxPath)</GamePath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <LangVersion>default</LangVersion>
+    <IsPackable>false</IsPackable>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+
+    <DefineConstants>TRACE;MELONLOADER;ML$(MelonLoader)</DefineConstants>
+    <DefineConstants Condition=" '$(IsSteam)' == 'true' ">$(DefineConstants);STEAM</DefineConstants>
+    <DefineConstants Condition=" '$(IsXbox)' == 'true' ">$(DefineConstants);XBOX</DefineConstants>
+
+    <ModName>$([System.IO.Path]::GetFileName($(MSBuildProjectDirectory)))</ModName>
+    <RootNamespace>Jakzo.NeonWhiteMods.$(ModName)</RootNamespace>
+
+    <PlatformFilenameSuffix Condition=" '$(GamePlatform)' != '' ">.$(GamePlatform)</PlatformFilenameSuffix>
+    <AssemblyName>$(ModName)$(PlatformFilenameSuffix)</AssemblyName>
+
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(GamePlatform)' == 'STEAM' or '$(GamePlatform)' == '' ">
+    <DefineConstants Condition=" '$(GamePlatform)' == 'STEAM' or '$(GamePlatform)' == '' ">$(DefineConstants);STEAM</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(GamePlatform)' == 'XBOX' or '$(GamePlatform)' == '' ">
+    <DefineConstants>$(DefineConstants);XBOX</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DefineConstants>$(DefineConstants);RELEASE</DefineConstants>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+
+  <Target
+    Name="CopyToGame"
+    AfterTargets="PostBuildEvent"
+    Condition=" '$(CopyIntoGameAfterBuild)' == 'true' and '$(GITHUB_ACTIONS)' != 'true' and '$(GamePath)' != '' "
+  >
+    <Copy
+      SourceFiles="$(TargetDir)$(TargetName).dll"
+      DestinationFiles="$(GamePath)\Mods\$(TargetName).dll"
+    />
+  </Target>
+
+  <ItemGroup>
+    <Reference
+      Include="$(GamePath)\MelonLoader\net6\0Harmony.dll;$(GamePath)\MelonLoader\net6\MelonLoader.dll;$(GamePath)\Neon White_Data\Managed\*.dll"
+      Exclude="$(GamePath)\Neon White_Data\Managed\System*.dll"
+    >
+      <HintPath>$(FullPath)</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+</Project>
