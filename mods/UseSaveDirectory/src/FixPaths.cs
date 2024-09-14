@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Reflection;
 using HarmonyLib;
@@ -19,9 +20,23 @@ public static class FixPaths
         [HarmonyPrefix]
         internal static bool Prefix(out string __result, string forcedPath, ulong forcedID)
         {
-            var filePath = "";
-            GhostUtils.GetPath(GhostUtils.GhostType.PersonalGhost, ref filePath);
-            __result = Path.Combine(forcedPath != "" ? forcedPath : filePath, $"{forcedID}.phant");
+            try
+            {
+                var filePath = "";
+                GhostUtils.GetPath(GhostUtils.GhostType.PersonalGhost, ref filePath);
+                __result = Path.Combine(
+                    forcedPath != "" ? forcedPath : filePath,
+                    $"{forcedID}.phant"
+                );
+            }
+            catch (Exception ex)
+            {
+                Mod.Instance.LoggerInstance.Error(
+                    "GhostRecorder_GetCompressedSavePath_Patch failed:"
+                );
+                Mod.Instance.LoggerInstance.Error(ex);
+                __result = null;
+            }
             return false;
         }
     }
@@ -32,10 +47,21 @@ public static class FixPaths
         [HarmonyPrefix]
         internal static bool Prefix(out string __result, LevelData level)
         {
-            var filePath = "";
-            GhostUtils.GetPath(level.levelID, GhostUtils.GhostType.PersonalGhost, ref filePath);
-            var id = 0UL;
-            __result = Path.Combine(filePath, $"{id}.phant");
+            try
+            {
+                var filePath = "";
+                GhostUtils.GetPath(level.levelID, GhostUtils.GhostType.PersonalGhost, ref filePath);
+                var id = 0UL;
+                __result = Path.Combine(filePath, $"{id}.phant");
+            }
+            catch (Exception ex)
+            {
+                Mod.Instance.LoggerInstance.Error(
+                    "GhostRecorder_GetCompressedSavePathForLevel_Patch failed:"
+                );
+                Mod.Instance.LoggerInstance.Error(ex);
+                __result = null;
+            }
             return false;
         }
     }
@@ -43,13 +69,11 @@ public static class FixPaths
     [HarmonyPatch(typeof(GhostUtils))]
     internal static class GhostUtils_GetPath_Patch
     {
-        internal static MethodBase TargetMethod()
-        {
-            return typeof(GhostUtils).GetMethod(
+        internal static MethodBase TargetMethod() =>
+            typeof(GhostUtils).GetMethod(
                 nameof(GhostUtils.GetPath),
                 [typeof(string), typeof(GhostUtils.GhostType), typeof(string).MakeByRefType()]
             );
-        }
 
         [HarmonyPrefix]
         internal static bool Prefix(
@@ -59,11 +83,20 @@ public static class FixPaths
             ref string filePath
         )
         {
-            if (ghostType != GhostUtils.GhostType.PersonalGhost)
-                return true;
+            try
+            {
+                if (ghostType != GhostUtils.GhostType.PersonalGhost)
+                    return true;
 
-            filePath = FileManagement.SaveMountPath + Path.Combine("Ghosts", levelName);
-            __result = true;
+                filePath = FileManagement.SaveMountPath + Path.Combine("Ghosts", levelName);
+                __result = true;
+            }
+            catch (Exception ex)
+            {
+                Mod.Instance.LoggerInstance.Error("GhostUtils_GetPath_Patch failed:");
+                Mod.Instance.LoggerInstance.Error(ex);
+                __result = false;
+            }
             return false;
         }
     }

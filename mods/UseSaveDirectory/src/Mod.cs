@@ -20,7 +20,7 @@ public static class BuildInfo
     public const string NAME = "UseSaveDirectory";
     public const string DESCRIPTION =
         "Saves ghost and game progress to the file system instead of to Xbox servers.";
-    public const string VERSION = "1.0.0";
+    public const string VERSION = "0.0.0";
 }
 
 public class Mod : NeonMod<Mod>
@@ -28,21 +28,11 @@ public class Mod : NeonMod<Mod>
     public string SavePath;
     public SimpleSaveDataManager FsSaveDataManager;
     public GameCoreSaveDataManager XboxSaveDataManager;
-    public MelonPreferences_Entry<string> PrefSavePath;
     public MelonPreferences_Entry<bool> PrefCopySaveFilesFromXbox;
-
-    private MethodInfo _getDestinationPath;
 
     public override void OnInitializeMod(MelonPreferences_Category prefsCategory)
     {
-        _getDestinationPath = typeof(SimpleSaveDataManager).GetMethod(
-            "GetDestinationPath",
-            BindingFlags.Instance | BindingFlags.NonPublic
-        );
-        if (_getDestinationPath == null)
-            throw new Exception("Could not find SimpleSaveDataManager.GetDestinationPath method");
-
-        PrefSavePath = prefsCategory.CreateEntry(
+        var prefSavePath = prefsCategory.CreateEntry(
             identifier: "save_path",
             display_name: "Save path",
             description: "Path to the directory where your game will be saved to.\n"
@@ -53,15 +43,15 @@ public class Mod : NeonMod<Mod>
         );
 
         PrefCopySaveFilesFromXbox = prefsCategory.CreateEntry(
-            identifier: "download_save_files_from_xbox",
-            display_name: "Download save files from Xbox",
+            identifier: "copy_save_files_from_xbox",
+            display_name: "Copy save files from Xbox",
             description: "If the save folder for your user does not exist (the one which is a long number) "
-                + "then it will add the files from your Xbox save.",
+                + "then it will create it and add the files from your Xbox save.",
             default_value: true
         );
 
         SavePath =
-            PrefSavePath.Value?.Length > 0 ? PrefSavePath.Value : Application.persistentDataPath;
+            prefSavePath.Value?.Length > 0 ? prefSavePath.Value : Application.persistentDataPath;
         FsSaveDataManager = new(new DotNetIO(), SavePath);
 
         Dbg.Log("Initialized");
@@ -76,19 +66,29 @@ public class Mod : NeonMod<Mod>
         [HarmonyPostfix]
         internal static void Postfix(ref IReadOnlyList<IPlatformService> __result)
         {
-            Dbg.Log("PlatformServicesBuilderBase_GetServices_Patch");
-            __result = __result
-                .Select(service =>
-                {
-                    if (service is GameCoreSaveDataManager manager)
+            try
+            {
+                Dbg.Log("PlatformServicesBuilderBase_GetServices_Patch");
+                __result = __result
+                    .Select(service =>
                     {
-                        Dbg.Log("Replaced GameCoreSaveDataManager with SimpleSaveDataManager");
-                        Instance.XboxSaveDataManager = manager;
-                        return Instance.FsSaveDataManager;
-                    }
-                    return service;
-                })
-                .ToArray();
+                        if (service is GameCoreSaveDataManager manager)
+                        {
+                            Dbg.Log("Replaced GameCoreSaveDataManager with SimpleSaveDataManager");
+                            Instance.XboxSaveDataManager = manager;
+                            return Instance.FsSaveDataManager;
+                        }
+                        return service;
+                    })
+                    .ToArray();
+            }
+            catch (Exception ex)
+            {
+                Instance.LoggerInstance.Error(
+                    "PlatformServicesBuilderBase_GetServices_Patch failed:"
+                );
+                Instance.LoggerInstance.Error(ex);
+            }
         }
     }
 
@@ -100,24 +100,23 @@ public class Mod : NeonMod<Mod>
         [HarmonyPrefix]
         internal static bool Prefix(out string __result)
         {
-            Dbg.Log("FileManagement_SaveMountPath_Patch");
-
             try
             {
+                Dbg.Log("FileManagement_SaveMountPath_Patch");
+
                 var user = Singleton<Game>.Instance.Platform.GetCurrentUser();
                 __result = Instance.GetUserSavePath(user) + Path.DirectorySeparatorChar;
+
+                Dbg.Log("__result", __result);
+                return false;
             }
             catch (Exception ex)
             {
-                Instance.LoggerInstance.Error(
-                    "Failed to call SimpleSaveDataManager.GetDestinationPath:"
-                );
+                Instance.LoggerInstance.Error("FileManagement_SaveMountPath_Patch failed:");
                 Instance.LoggerInstance.Error(ex);
-                throw ex;
+                __result = "";
+                return false;
             }
-
-            Dbg.Log("__result", __result);
-            return false;
         }
     }
 }

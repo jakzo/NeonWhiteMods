@@ -26,7 +26,7 @@
     <GamePath Condition=" !Exists($(GamePath)) "></GamePath>
     <RefsPath Condition=" '$(RefsPath)' == '' and Exists('$(SteamPath)') ">$(SteamPath)</RefsPath>
     <RefsPath Condition=" '$(RefsPath)' == '' and Exists('$(XboxPath)') ">$(XboxPath)</RefsPath>
-    <RefsPath>..\..\references\xbox</RefsPath>
+    <RefsPath Condition=" '$(RefsPath)' == '' ">..\..\references\xbox</RefsPath>
 
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>disable</Nullable>
