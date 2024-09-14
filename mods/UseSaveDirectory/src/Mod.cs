@@ -20,8 +20,7 @@ public static class BuildInfo
     public const string NAME = "UseSaveDirectory";
     public const string DESCRIPTION =
         "Saves ghost and game progress to the file system instead of to Xbox servers.";
-    public const string VERSION = "1.0.0";
-    public const string DOWNLOAD_URL = "";
+    public const string VERSION = "0.0.0";
 }
 
 public class Mod : NeonMod<Mod>
@@ -34,8 +33,6 @@ public class Mod : NeonMod<Mod>
 
     private MethodInfo _getDestinationPath;
 
-    // TODO: Craft a save file which is 100% completed but has slow best completion times
-    // TODO: Or better yet, if the save file doesn't exist, copy the one from Xbox...
     public override void OnInitializeMod(MelonPreferences_Category prefsCategory)
     {
         _getDestinationPath = typeof(SimpleSaveDataManager).GetMethod(

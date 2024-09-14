@@ -50,7 +50,7 @@ const release = await github.rest.repos.createRelease({
   tag_name: tagName,
   name: releaseName,
   body:
-    `[Link to README and code](https://github.com/jakzo/NeonWhiteMods/tree/main/mods/${modName})` +
+    `[📖 README and CODE 📖](https://github.com/jakzo/NeonWhiteMods/tree/${tagName}/mods/${modName})` +
     (changelogDescription ? `\n\n${changelogDescription}` : ""),
   draft: false,
   prerelease: false,

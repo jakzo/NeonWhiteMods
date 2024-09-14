@@ -23,7 +23,8 @@ using MelonLoader;
     Jakzo.NeonWhiteMods.BuildInfo.NAME,
     Jakzo.NeonWhiteMods.BuildInfo.VERSION,
     Jakzo.NeonWhiteMods.Metadata.AUTHOR,
-    Jakzo.NeonWhiteMods.BuildInfo.DOWNLOAD_URL
+    "https://github.com/jakzo/NeonWhiteMods/releases?expanded=true&q="
+        + Jakzo.NeonWhiteMods.BuildInfo.NAME
 )]
 
 namespace Jakzo.NeonWhiteMods;
