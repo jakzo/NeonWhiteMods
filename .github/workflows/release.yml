@@ -1,33 +1,47 @@
 name: Release
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      modName:
+        description: Mod name
+        required: true
+        default: UseSaveDirectory
+      versionBumpType:
+        description: Can be MAJOR, MINOR or PATCH
+        required: true
+        default: MAJOR
+      changelogDescription:
+        description: Markdown to add to changelog
+        required: false
 
 jobs:
-  dev:
-    name: Dev release
+  release:
+    name: Release
     runs-on: ubuntu-latest
     environment: Release
     permissions:
       contents: write
     steps:
+      - name: Setup Git
+        run: |
+          set -eux
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Build
-        run: dotnet build
+        run: dotnet build -c Release
 
-      - name: Create dev release
-        uses: softprops/action-gh-release@v1
+      - name: Release
+        uses: actions/github-script@v7
+        env:
+          modName: ${{ github.event.inputs.modName }}
+          versionBumpType: ${{ github.event.inputs.versionBumpType }}
+          changelogDescription: ${{ github.event.inputs.changelogDescription }}
         with:
-          prerelease: true
-          target_commitish: ${{ github.sha }}
-          name: "dev ${{ github.run_number }}"
-          tag_name: "dev_${{ github.run_number }}"
-          body: >
-            These are testing builds used for development of the mods.
-            They contain the most recent changes which are usually untested and broken.
-            Use at your own risk.
-          files: ./mods/*/bin/Debug/*.dll
+          script: |
+            Object.assign(global, { github, context });
+            return import('${{ github.workspace }}/.github/workflows/release.mjs');
