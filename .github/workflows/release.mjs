@@ -26,11 +26,23 @@ const newVersionContent = versionFileContent.replace(
 );
 await fs.writeFile(versionFilePath, newVersionContent);
 
-execSync(`git add "${versionFilePath}"`, { stdio: "inherit" });
-execSync(`git commit -m "Release ${modName} v${newVersion}" --no-verify`, {
-  stdio: "inherit",
-});
-execSync(`git push origin "${context.ref}" --no-verify`, { stdio: "inherit" });
+const script = `
+
+dotnet build -c Release
+
+git config --global user.name "github-actions[bot]"
+git config --global user.email "github-actions[bot]@users.noreply.github.com"
+git add "${versionFilePath}"
+git commit -m "Release ${modName} v${newVersion}" --no-verify
+git push origin "${context.ref}" --no-verify
+
+`;
+
+for (const line of script.split("\n")) {
+  if (!line.trim()) continue;
+  console.log("Running command:", line);
+  execSync(line, { stdio: "inherit" });
+}
 
 const modDir = path.join("mods", modName);
 const releaseAssetsDir = path.join(modDir, "bin/Release");
@@ -55,6 +67,8 @@ const release = await github.rest.repos.createRelease({
   owner: context.repo.owner,
   repo: context.repo.repo,
   tag_name: tagName,
+  draft: false,
+  prerelease: false,
   name: releaseName,
   body: [
     "# Changelog",
@@ -65,8 +79,6 @@ const release = await github.rest.repos.createRelease({
     "# Installation",
     installation,
   ].join("\n\n"),
-  draft: false,
-  prerelease: false,
 });
 
 core.summary.addLink(`Release ${releaseName}`, release.data.html_url);
