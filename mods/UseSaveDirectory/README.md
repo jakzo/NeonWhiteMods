@@ -1,3 +1,5 @@
+[Link to downloads](https://github.com/jakzo/NeonWhiteMods/releases?expanded=true&q=UseSaveDirectory)
+
 Saves ghost and game progress to the file system instead of to Xbox servers.
 
 Important things to note:
@@ -8,3 +10,4 @@ Important things to note:
   - There is an option to disable this
 - While the mod is active your Xbox will not be altered
   - Uninstalling the mod will let you use your Xbox save again
+- Works on the Xbox version of the game only
