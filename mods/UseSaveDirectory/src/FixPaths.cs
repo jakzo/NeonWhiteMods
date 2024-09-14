@@ -8,6 +8,7 @@ namespace Jakzo.NeonWhiteMods;
 // All methods below seem to have been modified in the Xbox version to replace slashes with
 // underscores (so it just saves flat files, no directories) and remove spaces so reverting
 // those changes with these patches
+
 // TODO: There may be more of these I haven't found...
 
 public static class FixPaths

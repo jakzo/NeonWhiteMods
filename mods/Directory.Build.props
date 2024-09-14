@@ -23,6 +23,12 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <RefsPath Condition=" '$(RefsPath)' == '' and Exists('$(SteamPath)') ">$(SteamPath)</RefsPath>
+    <RefsPath Condition=" '$(RefsPath)' == '' and Exists('$(XboxPath)') ">$(XboxPath)</RefsPath>
+    <RefsPath>..\..\references\xbox</RefsPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <ImplicitUsings>disable</ImplicitUsings>
     <Nullable>disable</Nullable>
     <LangVersion>default</LangVersion>
@@ -91,8 +97,8 @@
 
   <ItemGroup>
     <Reference
-      Include="$(GamePath)\MelonLoader\net6\0Harmony.dll;$(GamePath)\MelonLoader\net6\MelonLoader.dll;$(GamePath)\Neon White_Data\Managed\*.dll"
-      Exclude="$(GamePath)\Neon White_Data\Managed\System*.dll"
+      Include="$(RefsPath)\MelonLoader\net6\0Harmony.dll;$(RefsPath)\MelonLoader\net6\MelonLoader.dll;$(RefsPath)\Neon White_Data\Managed\*.dll"
+      Exclude="$(RefsPath)\Neon White_Data\Managed\System*.dll"
     >
       <HintPath>$(FullPath)</HintPath>
       <Private>false</Private>
