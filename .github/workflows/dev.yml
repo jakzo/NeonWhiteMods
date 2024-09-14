@@ -1,0 +1,33 @@
+name: Dev release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  dev:
+    name: Dev release
+    runs-on: ubuntu-latest
+    environment: Dev
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Build
+        run: dotnet build
+
+      - name: Create dev release
+        uses: softprops/action-gh-release@v1
+        with:
+          prerelease: true
+          target_commitish: ${{ github.sha }}
+          name: "dev ${{ github.run_number }}"
+          tag_name: "dev_${{ github.run_number }}"
+          body: >
+            These are testing builds used for development of the mods.
+            They contain the most recent changes which are usually untested and broken.
+            Use at your own risk.
+          files: ./mods/*/bin/Debug/*.dll
