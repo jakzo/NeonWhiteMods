@@ -8,9 +8,9 @@ on:
         required: true
         default: UseSaveDirectory
       versionBumpType:
-        description: Can be MAJOR, MINOR or PATCH
+        description: Can be major, minor or patch
         required: true
-        default: MAJOR
+        default: patch
       changelogDescription:
         description: Markdown to add to changelog
         required: false

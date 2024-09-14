@@ -32,7 +32,8 @@ execSync(`git commit -m "Release ${modName} v${newVersion}" --no-verify`, {
 });
 execSync(`git push origin "${context.ref}" --no-verify`, { stdio: "inherit" });
 
-const releaseAssetsDir = `./mods/${modName}/bin/Release`;
+const modDir = path.join("mods", modName);
+const releaseAssetsDir = path.join(modDir, "bin/Release");
 const filenames = await fs.readdir(releaseAssetsDir);
 
 const tagName = `${modName}_v${newVersion}`;
@@ -43,15 +44,27 @@ await github.rest.git.createRef({
   sha: execSync("git rev-parse HEAD").toString().trim(),
 });
 
-const releaseName = `${modName} v${newVersion}`;
+const readme = await fs.readFile(path.join(modDir, "README.md"), "utf8");
+const [readmeFirstChar] = readme;
+const emoji = readmeFirstChar.length > 0 ? readmeFirstChar : "";
+
+const installation = await fs.readFile("./support/INSTALLATION.md", "utf8");
+
+const releaseName = `${emoji}${emoji && " "}${modName} v${newVersion}`;
 const release = await github.rest.repos.createRelease({
   owner: context.repo.owner,
   repo: context.repo.repo,
   tag_name: tagName,
   name: releaseName,
-  body:
-    `[📖 README and CODE 📖](https://github.com/jakzo/NeonWhiteMods/tree/${tagName}/mods/${modName})` +
-    (changelogDescription ? `\n\n${changelogDescription}` : ""),
+  body: [
+    "# Changelog",
+    `[💻 CODE](https://github.com/jakzo/NeonWhiteMods/tree/${tagName}/mods/${modName})`,
+    changelogDescription,
+    "# Readme",
+    readme,
+    "# Installation",
+    installation,
+  ].join("\n\n"),
   draft: false,
   prerelease: false,
 });
