@@ -20,7 +20,7 @@ public static class BuildInfo
     public const string NAME = "UseSaveDirectory";
     public const string DESCRIPTION =
         "Saves ghost and game progress to the file system instead of to Xbox servers.";
-    public const string VERSION = "1.0.0";
+    public const string VERSION = "1.0.1";
 }
 
 public class Mod : NeonMod<Mod>
