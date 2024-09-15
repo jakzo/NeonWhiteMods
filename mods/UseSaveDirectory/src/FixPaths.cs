@@ -105,40 +105,79 @@ public static class FixPaths
     }
 
     [HarmonyPatch]
-    internal static class GhostUtils_LoadLevelDataCompressedAsync_Patch
+    internal static class GhostRecorder_LoadLevelTotalTimeCompressedAsync_Patch
     {
+        public const string GENERATED_CLASS_NAME = "<LoadLevelTotalTimeCompressedAsync>d__29";
+
         [HarmonyTargetMethod]
         internal static MethodInfo TargetMethod() =>
-            typeof(GhostUtils)
-                .GetNestedType("<LoadLevelDataCompressedAsync>d__9", BindingFlags.NonPublic)
+            typeof(GhostRecorder)
+                .GetNestedType(GENERATED_CLASS_NAME, BindingFlags.NonPublic)
                 .GetMethod("MoveNext", BindingFlags.Instance | BindingFlags.NonPublic);
 
         [HarmonyTranspiler]
         internal static IEnumerable<CodeInstruction> Transpiler(
             IEnumerable<CodeInstruction> instructions
-        )
+        ) => TernaryUnderscoreRemover(GENERATED_CLASS_NAME, instructions);
+    }
+
+    [HarmonyPatch]
+    internal static class GhostUtils_LoadLevelDataCompressedAsync_Patch
+    {
+        public const string GENERATED_CLASS_NAME = "<LoadLevelDataCompressedAsync>d__9";
+
+        [HarmonyTargetMethod]
+        internal static MethodInfo TargetMethod() =>
+            typeof(GhostUtils)
+                .GetNestedType(GENERATED_CLASS_NAME, BindingFlags.NonPublic)
+                .GetMethod("MoveNext", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        [HarmonyTranspiler]
+        internal static IEnumerable<CodeInstruction> Transpiler(
+            IEnumerable<CodeInstruction> instructions
+        ) => TernaryUnderscoreRemover(GENERATED_CLASS_NAME, instructions);
+    }
+
+    private static IEnumerable<CodeInstruction> TernaryUnderscoreRemover(
+        string generatedClassName,
+        IEnumerable<CodeInstruction> instructions
+    )
+    {
+        // Changes this: ghostType == GhostType.PersonalGhost ? '_' : Path.DirectorySeparatorChar;
+        // To this: ghostType == GhostType.PersonalGhost; Path.DirectorySeparatorChar;
+        var signature = new OpCode[]
         {
-            // Changes this: ghostType == GhostType.PersonalGhost ? '_' : Path.DirectorySeparatorChar;
-            // To this: ghostType == GhostType.PersonalGhost; Path.DirectorySeparatorChar;
-            var replaced = false;
-            foreach (var instruction in instructions)
+            OpCodes.Ldarg_0,
+            OpCodes.Ldfld,
+            OpCodes.Ldc_I4_1,
+            OpCodes.Beq,
+        };
+        var i = 0;
+        var replaced = false;
+        foreach (var instruction in instructions)
+        {
+            if (!replaced)
             {
-                if (!replaced && instruction.opcode == OpCodes.Beq)
+                if (instruction.opcode == signature[i])
                 {
-                    // Pop the values the beq would have but don't jump
-                    yield return new CodeInstruction(OpCodes.Pop);
-                    yield return new CodeInstruction(OpCodes.Pop);
-                    replaced = true;
+                    if (++i == signature.Length)
+                    {
+                        // Pop the values the beq would have but don't jump
+                        yield return new CodeInstruction(OpCodes.Pop);
+                        yield return new CodeInstruction(OpCodes.Pop);
+                        replaced = true;
+                        continue;
+                    }
                 }
                 else
                 {
-                    yield return instruction;
+                    i = 0;
                 }
             }
-            if (!replaced)
-                MelonLogger.Warning(
-                    "Failed to initialize GhostUtils_LoadLevelDataCompressedAsync_Patch"
-                );
+
+            yield return instruction;
         }
+        if (!replaced)
+            MelonLogger.Warning($"Failed to initialize {generatedClassName} patch");
     }
 }
