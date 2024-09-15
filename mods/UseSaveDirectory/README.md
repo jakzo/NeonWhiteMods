@@ -1,4 +1,4 @@
-📂 Saves ghost and game progress to the file system instead of to Xbox servers.
+📂 Saves ghost and game progress to the file system instead of to Xbox servers. Useful for copying ghost files, swapping saves and getting other mods which save files to work.
 
 Important things to note:
 

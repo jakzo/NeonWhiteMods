@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Reflection.Emit;
 using HarmonyLib;
+using MelonLoader;
 using TFBGames;
 
 namespace Jakzo.NeonWhiteMods;
@@ -98,6 +101,44 @@ public static class FixPaths
                 __result = false;
             }
             return false;
+        }
+    }
+
+    [HarmonyPatch]
+    internal static class GhostUtils_LoadLevelDataCompressedAsync_Patch
+    {
+        [HarmonyTargetMethod]
+        internal static MethodInfo TargetMethod() =>
+            typeof(GhostUtils)
+                .GetNestedType("<LoadLevelDataCompressedAsync>d__9", BindingFlags.NonPublic)
+                .GetMethod("MoveNext", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        [HarmonyTranspiler]
+        internal static IEnumerable<CodeInstruction> Transpiler(
+            IEnumerable<CodeInstruction> instructions
+        )
+        {
+            // Changes this: ghostType == GhostType.PersonalGhost ? '_' : Path.DirectorySeparatorChar;
+            // To this: ghostType == GhostType.PersonalGhost; Path.DirectorySeparatorChar;
+            var replaced = false;
+            foreach (var instruction in instructions)
+            {
+                if (!replaced && instruction.opcode == OpCodes.Beq)
+                {
+                    // Pop the values the beq would have but don't jump
+                    yield return new CodeInstruction(OpCodes.Pop);
+                    yield return new CodeInstruction(OpCodes.Pop);
+                    replaced = true;
+                }
+                else
+                {
+                    yield return instruction;
+                }
+            }
+            if (!replaced)
+                MelonLogger.Warning(
+                    "Failed to initialize GhostUtils_LoadLevelDataCompressedAsync_Patch"
+                );
         }
     }
 }
