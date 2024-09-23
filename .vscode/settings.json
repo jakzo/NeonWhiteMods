@@ -17,7 +17,6 @@
     "editor.defaultFormatter": "redhat.vscode-yaml"
   },
   "dotnet.defaultSolution": "NeonWhiteMods.sln",
-  "omnisharp.useModernNet": true,
   "editor.formatOnSave": true,
   "dotnet.preferCSharpExtension": false,
   "dotnet.server.useOmnisharp": false,

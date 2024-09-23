@@ -1,4 +1,4 @@
-🗑️ Resets times which achieved using skips not possible on the Steam version of the game. Specifically on the Xbox version of the game in The Third Temple there is a finish sitting out-of-bounds allowing the entire level to be skipped.
+🗑️ Resets times which were achieved using skips not possible on the Steam version of the game. Specifically on the Xbox version of the game in The Third Temple there is a finish sitting out-of-bounds allowing the entire level to be skipped.
 
 > A future version of this mod may save separate times for with and without skip so you can switch between them by installing or uninstalling this mod.
 
