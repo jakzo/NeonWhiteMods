@@ -8,7 +8,7 @@ public static class BuildInfo
     public const string NAME = "ResetSkipTimes";
     public const string DESCRIPTION =
         "Resets times which achieved using skips not possible on the Steam version of the game.";
-    public const string VERSION = "0.0.0";
+    public const string VERSION = "0.1.0";
 }
 
 // TODO: Save best skip and non-skip time somewhere so we can switch between them
