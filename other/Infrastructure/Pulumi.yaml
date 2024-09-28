@@ -1,0 +1,5 @@
+name: NeonWhiteModsInfrastructure
+runtime: dotnet
+description: Neon White modding server backends and other infrastructure.
+backend:
+  url: file://.

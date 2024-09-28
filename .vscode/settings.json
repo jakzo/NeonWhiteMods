@@ -36,5 +36,6 @@
     "GamePath",
     "PostBuildEvent",
     "DefineConstants"
-  ]
+  ],
+  "editor.wordWrapColumn": 100
 }

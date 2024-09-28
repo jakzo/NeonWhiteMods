@@ -1,0 +1,12 @@
+encryptionsalt: v1:otjwaez6tyA=:v1:DTihU45gP27xiOgd:GaVpFeCkW6Ivb/Kr9852at+AqGLO7Q==
+config:
+  aws:region: us-east-1
+  aws:accessKey: test
+  aws:secretKey: test
+  aws:s3UsePathStyle: "true"
+  aws:skipCredentialsValidation: "true"
+  aws:skipRequestingAccountId: "true"
+  aws:endpoints:
+    - iam: http://localhost:4566
+    - lambda: http://localhost:4566
+    - dynamodb: http://localhost:4566

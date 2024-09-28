@@ -1,0 +1,4 @@
+encryptionsalt: v1:ZgJQ3wNJm7I=:v1:lYwtoKQlCMviCdZH:uoiUCbtIVqDDoZfOBiRLeV9xG2RJQg==
+config:
+  aws:region: us-west-2
+  aws:profile: NeonWhiteMods-dev
