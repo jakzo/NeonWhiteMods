@@ -16,6 +16,9 @@
   "[yaml]": {
     "editor.defaultFormatter": "redhat.vscode-yaml"
   },
+  "[typescript]": {
+    "editor.defaultFormatter": "denoland.vscode-deno"
+  },
   "dotnet.defaultSolution": "NeonWhiteMods.sln",
   "editor.formatOnSave": true,
   "dotnet.preferCSharpExtension": false,

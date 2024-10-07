@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk" DefaultTargets="BuildAll">
+  <Target Name="BuildAll">
+    <!-- All game/Melon Loader version combinations to build -->
+    <MSBuild Projects="$(MSBuildProjectFile)" Targets="Build"
+      Properties="Configuration=$(Configuration);MelonLoader=6" />
+  </Target>
+
+  <PropertyGroup>
+    <!-- <CopyIntoGameAfterBuild>true</CopyIntoGameAfterBuild> -->
+
+    <ProjectGuid>{5DF9BFF0-7820-11EF-B01A-0800200C9A65}</ProjectGuid>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="src/**/*.cs" />
+    <Compile Include="../../common/NeonMod.cs" />
+  </ItemGroup>
+
+  <!-- <ItemGroup>
+    <Compile Include="AppVersion.cs" />
+    <Compile Include="src/**/*.cs" />
+    <Compile Include="../../../common/Utilities/Metadata.cs" />
+    <Compile Include="../../../common/Utilities/Dbg.cs" />
+    <Compile Include="../../../common/Utilities/Colliders.cs" />
+    <Compile Include="../../../common/Utilities/Shaders.cs" />
+    <Compile Include="../../../common/Utilities/Geometry.cs" />
+    <Compile Include="../../../common/Utilities/Unity.cs" />
+    <Compile Include="../../../common/Bonelab/LevelHooks.cs" />
+    <Compile Include="../../../common/Bonelab/Levels.cs" />
+  </ItemGroup> -->
+
+</Project>

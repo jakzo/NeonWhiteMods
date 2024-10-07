@@ -6,9 +6,9 @@
   </Target>
 
   <PropertyGroup>
-    <!-- <CopyIntoGameAfterBuild>true</CopyIntoGameAfterBuild> -->
+    <CopyIntoGameAfterBuild>true</CopyIntoGameAfterBuild>
 
-    <ProjectGuid>{5DF9BFF0-7820-11EF-B01A-0800200C9A66}</ProjectGuid>
+    <ProjectGuid>{5DF9BFF0-7820-11EF-B01A-0800200C9A63}</ProjectGuid>
   </PropertyGroup>
 
   <ItemGroup>
